@@ -1,8 +1,10 @@
 {
   "name": "saas-bot-telegram",
   "version": "1.0.0",
-  "type": "module",
+  "description": "Backend para SaaS Telegram",
+  "main": "api/index.js",
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.7"
+    "@supabase/supabase-js": "^2.39.0",
+    "cors": "^2.8.5"
   }
 }
