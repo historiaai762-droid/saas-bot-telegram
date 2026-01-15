@@ -1,10 +1,11 @@
-import { createClient } from "@supabase/supabase-js";
+// MUDANÇA AQUI: Usando 'require' em vez de 'import' para o Vercel aceitar
+const { createClient } = require("@supabase/supabase-js");
 
 // 1. Configuração das Chaves
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 
-// 2. Verificação de Segurança (Para debug)
+// 2. Verificação de Segurança
 if (!supabaseUrl || !supabaseKey) {
   throw new Error("As chaves do Supabase não foram carregadas no Vercel!");
 }
@@ -18,11 +19,11 @@ export default async function handler(req, res) {
     if (req.method !== "POST") {
       return res.status(200).json({ 
         ok: true, 
-        message: "Webhook PagSeguro está ONLINE! (As chaves funcionaram)" 
+        message: "Webhook PagSeguro está ONLINE! (Agora vai!)" 
       });
     }
 
-    // 5. Lógica do Webhook (Quando o PagSeguro manda dados)
+    // 5. Lógica do Webhook
     const event = req.body;
 
     if (!event) {
@@ -32,7 +33,7 @@ export default async function handler(req, res) {
     // Exemplo: Ativar assinatura
     if (event.status === "ACTIVE") {
       const { error } = await supabase.from("subscriptions").upsert({
-        user_id: event.reference_id, // Garanta que o PagSeguro envia isso
+        user_id: event.reference_id,
         plan: event.plan || "mensal",
         status: "active",
         expires_at: event.next_billing_at || new Date().toISOString()
