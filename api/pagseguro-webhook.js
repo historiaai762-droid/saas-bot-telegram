@@ -6,26 +6,29 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
   try {
+    if (req.method !== "POST") {
+      return res.status(200).json({ ok: true, message: "Webhook ativo" });
+    }
+
     const event = req.body;
 
-    if (event.status === "ACTIVE") {
-      const userId = event.reference_id;
+    if (!event) {
+      return res.status(400).json({ error: "No payload" });
+    }
 
+    if (event.status === "ACTIVE") {
       await supabase.from("subscriptions").upsert({
-        user_id: userId,
-        plan: event.plan,
+        user_id: event.reference_id,
+        plan: event.plan || "mensal",
         status: "active",
-        expires_at: event.next_billing_at
+        expires_at: event.next_billing_at || new Date().toISOString()
       });
     }
 
     return res.status(200).json({ ok: true });
   } catch (err) {
+    console.error("WEBHOOK ERROR:", err);
     return res.status(500).json({ error: err.message });
   }
 }
