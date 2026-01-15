@@ -1,18 +1,76 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title>Bot Telegram SaaS</title>
-</head>
-<body>
+<style>
+  /* Estilos da Tabela de Preços */
+  .pricing-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 40px 20px; font-family: Arial, sans-serif; }
+  .pricing-card { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 30px; width: 250px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s; position: relative; }
+  .pricing-card:hover { transform: translateY(-10px); border-color: #00C853; }
+  .pricing-card.featured { border: 2px solid #00C853; background: #f9fff9; }
+  .badge { background: #00C853; color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-weight: bold; }
+  .plan-name { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px; }
+  .price { font-size: 32px; color: #00C853; font-weight: bold; margin-bottom: 5px; }
+  .period { color: #777; font-size: 14px; margin-bottom: 20px; }
+  .features { list-style: none; padding: 0; margin-bottom: 25px; color: #555; font-size: 14px; }
+  .features li { margin-bottom: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; }
+  .btn-buy { background: #00C853; color: white; text-decoration: none; padding: 12px 25px; border-radius: 5px; display: inline-block; font-weight: bold; transition: background 0.3s; width: 80%; }
+  .btn-buy:hover { background: #009624; }
+</style>
 
-<h1>Bot Telegram SaaS</h1>
-<p>Site online ✅</p>
+<div class="pricing-container">
+  
+  <!-- PLANO MENSAL -->
+  <div class="pricing-card">
+    <div class="plan-name">Mensal</div>
+    <div class="price">R$ 24,97</div>
+    <div class="period">/mês</div>
+    <ul class="features">
+      <li>✅ Postagens Automáticas</li>
+      <li>✅ Acesso Imediato</li>
+      <li>✅ Suporte Básico</li>
+      <li>🚫 Sem desconto</li>
+    </ul>
+    <a href="https://pag.ae/81q27Cg-m" target="_blank" class="btn-buy">Assinar</a>
+  </div>
 
-<button onclick="testWebhook()">Testar Webhook</button>
+  <!-- PLANO TRIMESTRAL -->
+  <div class="pricing-card">
+    <div class="plan-name">Trimestral</div>
+    <div class="price">R$ 57,97</div>
+    <div class="period">a cada 3 meses</div>
+    <ul class="features">
+      <li>✅ Postagens Automáticas</li>
+      <li>✅ Acesso Imediato</li>
+      <li>✅ Suporte Prioritário</li>
+      <li>🔥 Economize R$ 17,00</li>
+    </ul>
+    <a href="https://pag.ae/81q2ew_-m" target="_blank" class="btn-buy">Assinar</a>
+  </div>
 
-<p id="resposta"></p>
+  <!-- PLANO SEMESTRAL -->
+  <div class="pricing-card">
+    <div class="plan-name">Semestral</div>
+    <div class="price">R$ 97,97</div>
+    <div class="period">a cada 6 meses</div>
+    <ul class="features">
+      <li>✅ Postagens Automáticas</li>
+      <li>✅ Acesso Imediato</li>
+      <li>✅ Suporte VIP</li>
+      <li>🔥 Economize R$ 51,00</li>
+    </ul>
+    <a href="https://pag.ae/81q2fsmr2" target="_blank" class="btn-buy">Assinar</a>
+  </div>
 
-<script src="script.js"></script>
-</body>
-</html>
+  <!-- PLANO VITALÍCIO (DESTAQUE) -->
+  <div class="pricing-card featured">
+    <div class="badge">MAIS VENDIDO</div>
+    <div class="plan-name">Vitalício</div>
+    <div class="price">R$ 197,97</div>
+    <div class="period">pagamento único</div>
+    <ul class="features">
+      <li>✅ Postagens ILIMITADAS</li>
+      <li>✅ Acesso PARA SEMPRE</li>
+      <li>✅ Todas Atualizações</li>
+      <li>💎 Melhor Custo-Benefício</li>
+    </ul>
+    <a href="https://pag.ae/81q2gdzsG" target="_blank" class="btn-buy">Comprar Agora</a>
+  </div>
+
+</div>
