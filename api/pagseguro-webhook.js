@@ -1,36 +1,43 @@
-// MUDANÇA AQUI: Usando 'require' em vez de 'import' para o Vercel aceitar
 const { createClient } = require("@supabase/supabase-js");
 
-// 1. Configuração das Chaves
+// Pega as chaves
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 
-// 2. Verificação de Segurança
+// --- ÁREA DE DIAGNÓSTICO (Vai aparecer no Log) ---
+console.log("--- INÍCIO DO DIAGNÓSTICO ---");
+console.log("Estou rodando no ambiente:", process.env.NODE_ENV);
+console.log("Tentando ler SUPABASE_URL:", supabaseUrl ? "✅ ACHEI!" : "❌ ESTÁ VAZIO/UNDEFINED");
+console.log("Tentando ler SUPABASE_KEY:", supabaseKey ? "✅ ACHEI!" : "❌ ESTÁ VAZIO/UNDEFINED");
+console.log("--- FIM DO DIAGNÓSTICO ---");
+// --------------------------------------------------
+
+// Verificação de Segurança
 if (!supabaseUrl || !supabaseKey) {
-  throw new Error("As chaves do Supabase não foram carregadas no Vercel!");
+  throw new Error("DIAGNÓSTICO: O código rodou, mas as variáveis vieram vazias.");
 }
 
-// 3. Inicializa o Supabase
+// Inicializa
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default async function handler(req, res) {
   try {
-    // 4. Se você abrir no navegador (GET), mostra mensagem de sucesso
     if (req.method !== "POST") {
       return res.status(200).json({ 
         ok: true, 
-        message: "Webhook PagSeguro está ONLINE! (Agora vai!)" 
+        message: "Webhook Conectado! O Supabase foi carregado com sucesso." 
       });
     }
 
-    // 5. Lógica do Webhook
     const event = req.body;
+    
+    // Log do evento recebido para ajudar no futuro
+    console.log("Evento recebido do PagSeguro:", JSON.stringify(event));
 
     if (!event) {
-      return res.status(400).json({ error: "Sem dados (No Payload)" });
+      return res.status(400).json({ error: "No payload" });
     }
 
-    // Exemplo: Ativar assinatura
     if (event.status === "ACTIVE") {
       const { error } = await supabase.from("subscriptions").upsert({
         user_id: event.reference_id,
@@ -45,7 +52,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
 
   } catch (err) {
-    console.error("ERRO NO WEBHOOK:", err);
+    console.error("ERRO CRÍTICO:", err);
     return res.status(500).json({ error: err.message });
   }
 }
