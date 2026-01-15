@@ -1,16 +1,18 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+// CORREÇÃO: Usando os nomes exatos que colocamos no Vercel
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY; // Antes estava SUPABASE_SERVICE_ROLE_KEY
+
+// Verificação de segurança (para o log te avisar se falhar de novo)
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error("As chaves do Supabase não foram carregadas no Vercel!");
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default async function handler(req, res) {
-  try {
-    if (req.method !== "POST") {
-      return res.status(200).json({ ok: true, message: "Webhook ativo" });
-    }
-
+  // ... (mantenha o resto do seu código igual daqui para baixo)
     const event = req.body;
 
     if (!event) {
@@ -32,3 +34,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: err.message });
   }
 }
+
