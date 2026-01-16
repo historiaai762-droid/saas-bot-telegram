@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Restrito | Bot Premium</title>
+    <!-- Importando Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        body {
+            background: #0a0e1a;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .login-card {
+            background: #1a1f2e;
+            padding: 40px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(185, 255, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 { color: #b9ff00; margin-bottom: 10px; }
+        p { color: #888; margin-bottom: 30px; font-size: 14px; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #0f1419;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: white;
+            outline: none;
+        }
+
+        input:focus { border-color: #b9ff00; }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #b9ff00 0%, #00ff88 100%);
+            border: none;
+            border-radius: 8px;
+            color: #0a0e1a;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        button:hover { transform: scale(1.02); }
+
+        .toggle-text {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #ccc;
+        }
+
+        .toggle-text span {
+            color: #b9ff00;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: none;
+        }
+        .error { background: rgba(255, 0, 85, 0.2); color: #ff0055; border: 1px solid #ff0055; }
+        .success { background: rgba(0, 255, 136, 0.2); color: #00ff88; border: 1px solid #00ff88; }
+
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2 id="titulo">Bem-vindo</h2>
+        <p id="subtitulo">Faça login para acessar o Bot</p>
+
+        <div id="mensagem" class="alert"></div>
+
+        <input type="email" id="email" placeholder="Seu e-mail de compra">
+        <input type="password" id="senha" placeholder="Sua senha">
+
+        <button onclick="acaoPrincipal()" id="btnAcao">ENTRAR</button>
+
+        <div class="toggle-text">
+            <span id="trocarModo" onclick="alternarModo()">Não tem conta? Crie uma aqui</span>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // 🚨 CONFIGURAÇÃO - COLOQUE SUAS CHAVES AQUI
+        // ============================================================
+        const supabaseUrl = "https://zyjeriulpozkvhtxdvrx.supabase.co";
+        // Use a chave ANON (aquela pública), NÃO use a service_role aqui
+        const supabaseKey = "COLE_SUA_CHAVE_ANON_DO_SUPABASE_AQUI"; 
+        // ============================================================
+
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        let modoLogin = true; // true = Login, false = Cadastro
+
+        function alternarModo() {
+            modoLogin = !modoLogin;
+            const titulo = document.getElementById('titulo');
+            const subtitulo = document.getElementById('subtitulo');
+            const btn = document.getElementById('btnAcao');
+            const toggle = document.getElementById('trocarModo');
+
+            if (modoLogin) {
+                titulo.innerText = "Bem-vindo";
+                subtitulo.innerText = "Faça login para acessar o Bot";
+                btn.innerText = "ENTRAR";
+                toggle.innerText = "Não tem conta? Crie uma aqui";
+            } else {
+                titulo.innerText = "Criar Conta";
+                subtitulo.innerText = "Use o MESMO e-mail da compra";
+                btn.innerText = "CADASTRAR";
+                toggle.innerText = "Já tem conta? Faça login";
+            }
+        }
+
+        async function acaoPrincipal() {
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const msgDiv = document.getElementById('mensagem');
+
+            if (!email || !senha) {
+                mostrarErro("Preencha todos os campos.");
+                return;
+            }
+
+            msgDiv.style.display = 'none';
+            document.getElementById('btnAcao').innerText = "Carregando...";
+
+            if (modoLogin) {
+                // --- LOGAR ---
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: senha,
+                });
+
+                if (error) {
+                    mostrarErro("Erro: " + error.message);
+                } else {
+                    window.location.href = "app.html"; // Redireciona para o Bot
+                }
+
+            } else {
+                // --- CADASTRAR ---
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: senha,
+                });
+
+                if (error) {
+                    mostrarErro("Erro ao cadastrar: " + error.message);
+                } else {
+                    mostrarSucesso("Conta criada! Fazendo login...");
+                    // Tenta logar automaticamente após criar
+                    await supabase.auth.signInWithPassword({ email, password: senha });
+                    setTimeout(() => { window.location.href = "app.html"; }, 1500);
+                }
+            }
+            
+            if(modoLogin) document.getElementById('btnAcao').innerText = "ENTRAR";
+            else document.getElementById('btnAcao').innerText = "CADASTRAR";
+        }
+
+        function mostrarErro(texto) {
+            const msg = document.getElementById('mensagem');
+            msg.className = "alert error";
+            msg.innerText = texto;
+            msg.style.display = "block";
+        }
+
+        function mostrarSucesso(texto) {
+            const msg = document.getElementById('mensagem');
+            msg.className = "alert success";
+            msg.innerText = texto;
+            msg.style.display = "block";
+        }
+    </script>
+
+</body>
+</html>
