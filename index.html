@@ -1,197 +1,366 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Planos | Bot Telegram Premium</title>
-  <style>
-    /* Estilos Gerais */
-    body { background-color: #f4f7f6; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-
-    /* BOTÃO DE LOGIN NO TOPO */
-    .top-bar {
-      display: flex;
-      justify-content: flex-end;
-      padding: 20px 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .btn-login {
-      color: #00C853;
-      font-weight: bold;
-      text-decoration: none;
-      border: 2px solid #00C853;
-      padding: 10px 25px;
-      border-radius: 8px;
-      transition: all 0.3s;
-    }
-
-    .btn-login:hover {
-      background: #00C853;
-      color: white;
-    }
-
-    /* Estilos da Tabela de Preços */
-    .pricing-container { 
-      display: flex; 
-      flex-wrap: wrap; 
-      justify-content: center; 
-      gap: 20px; 
-      padding: 20px 20px; 
-    }
-
-    .pricing-card { 
-      background: #fff; 
-      border: 1px solid #eee; 
-      border-radius: 10px; 
-      padding: 30px; 
-      width: 250px; 
-      text-align: center; 
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-      transition: transform 0.3s; 
-      position: relative; 
-    }
-
-    .pricing-card:hover { transform: translateY(-10px); border-color: #00C853; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Telegram Premium | Oficial</title>
     
-    .pricing-card.featured { 
-      border: 2px solid #00C853; 
-      background: #f9fff9; 
-      transform: scale(1.05);
-    }
-
-    .pricing-card.featured:hover { transform: scale(1.05) translateY(-10px); }
-
-    .badge { 
-      background: #00C853; 
-      color: white; 
-      padding: 5px 15px; 
-      border-radius: 20px; 
-      font-size: 12px; 
-      position: absolute; 
-      top: -12px; 
-      left: 50%; 
-      transform: translateX(-50%); 
-      font-weight: bold; 
-    }
-
-    .plan-name { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px; }
-    .price { font-size: 32px; color: #00C853; font-weight: bold; margin-bottom: 5px; }
-    .period { color: #777; font-size: 14px; margin-bottom: 20px; }
+    <!-- FAVICON (Ícone da Aba) -->
+    <link rel="icon" type="image/png" href="https://i.ibb.co/bR1dHts5/telegram-bot-premium.png">
     
-    .features { list-style: none; padding: 0; margin-bottom: 25px; color: #555; font-size: 14px; }
-    .features li { margin-bottom: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #b9ff00;
+            --primary-hover: #98d100;
+            --dark-bg: #0a0e1a;
+            --card-bg: #161b2c;
+            --text-main: #ffffff;
+            --text-dim: #a0a7b5;
+        }
 
-    .btn-buy { 
-      background: #00C853; 
-      color: white; 
-      text-decoration: none; 
-      padding: 12px 25px; 
-      border-radius: 5px; 
-      display: inline-block; 
-      font-weight: bold; 
-      transition: background 0.3s; 
-      width: 80%; 
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; scroll-behavior: smooth; }
 
-    .btn-buy:hover { background: #009624; }
+        body { background-color: var(--dark-bg); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
 
-    /* AVISO DE E-MAIL */
-    .email-warning {
-      text-align: center;
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 20px;
-      background: #fff3cd;
-      border: 1px solid #ffeeba;
-      color: #856404;
-      border-radius: 10px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
+        /* NAVBAR */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 8%;
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
 
-    .email-warning strong { color: #c00; }
-  </style>
+        .logo-box { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-img { width: 40px; height: auto; }
+        .logo-text { font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+
+        .btn-login {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 18px;
+            border-radius: 8px;
+            transition: 0.3s;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .btn-login:hover { background: var(--primary); color: var(--dark-bg); }
+
+        /* HERO SECTION */
+        .hero {
+            padding: 180px 8% 100px;
+            text-align: center;
+            background: radial-gradient(circle at top, #1c2541 0%, #0a0e1a 100%);
+        }
+
+        .hero-logo { width: 120px; margin-bottom: 20px; filter: drop-shadow(0 0 20px rgba(185, 255, 0, 0.3)); }
+        .hero h1 { font-size: 3.2rem; font-weight: 900; margin-bottom: 20px; line-height: 1.1; letter-spacing: -1px; }
+        .hero h1 span { color: var(--primary); }
+        .hero p { color: var(--text-dim); font-size: 1.1rem; max-width: 700px; margin: 0 auto 30px; }
+
+        /* GUIA DE CONFIGURAÇÃO */
+        .guide-section { padding: 60px 8%; background: rgba(185, 255, 0, 0.02); border-top: 1px solid rgba(255,255,255,0.05); }
+        .guide-container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        
+        .step-card { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        .step-number { background: var(--primary); color: var(--dark-bg); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; margin-bottom: 15px; font-size: 0.8rem; }
+        .step-card h3 { font-size: 0.95rem; margin-bottom: 8px; color: var(--primary); text-transform: uppercase; }
+        .step-card p { font-size: 0.8rem; color: var(--text-dim); }
+
+        /* PRICING SECTION */
+        .pricing-section { padding: 80px 8%; text-align: center; }
+        .section-title { margin-bottom: 50px; }
+        .section-title h2 { font-size: 2.2rem; margin-bottom: 10px; }
+        
+        .pricing-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+
+        .pricing-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 35px 25px;
+            width: 260px;
+            transition: 0.3s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pricing-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+        .pricing-card.featured { border: 2px solid var(--primary); box-shadow: 0 10px 40px rgba(185, 255, 0, 0.1); background: #1c2235; }
+
+        .badge { background: var(--primary); color: var(--dark-bg); padding: 4px 12px; border-radius: 20px; font-size: 0.65rem; font-weight: 800; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); }
+
+        .plan-name { font-size: 1rem; font-weight: 700; color: var(--text-dim); margin-bottom: 10px; }
+        .price { font-size: 2.2rem; font-weight: 900; color: var(--primary); }
+        .period { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 25px; }
+
+        .features { list-style: none; text-align: left; margin-bottom: 30px; flex-grow: 1; }
+        .features li { margin-bottom: 10px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+        .features li i { color: var(--primary); font-size: 0.8rem; }
+
+        .btn-buy { background: var(--primary); color: var(--dark-bg); text-decoration: none; padding: 12px; border-radius: 10px; display: block; font-weight: 800; transition: 0.3s; }
+        .btn-buy:hover { transform: scale(1.05); background: var(--primary-hover); }
+
+        /* FAQ */
+        .faq-section { padding: 80px 8%; background: rgba(255,255,255,0.02); }
+        .faq-container { max-width: 800px; margin: 0 auto; }
+        .faq-item { background: var(--card-bg); margin-bottom: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
+        .faq-question { padding: 18px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 700; transition: 0.3s; }
+        .faq-question:hover { color: var(--primary); }
+        .faq-answer { padding: 0 18px; max-height: 0; overflow: hidden; transition: 0.3s ease-out; color: var(--text-dim); font-size: 0.9rem; }
+        .faq-item.active .faq-answer { padding: 0 18px 18px; max-height: 300px; }
+        .faq-item.active .fa-chevron-down { transform: rotate(180deg); color: var(--primary); }
+
+        /* CONTATO */
+        .contact-section { padding: 80px 8%; text-align: center; }
+        .contact-card { background: var(--card-bg); padding: 40px; border-radius: 20px; max-width: 600px; margin: 0 auto; border: 1px solid var(--primary); }
+        .contact-email { font-size: 1.2rem; color: var(--primary); margin: 15px 0; font-weight: 800; word-break: break-all; }
+
+        /* SOCIAL PROOF POPUP */
+        #social-proof {
+            position: fixed;
+            bottom: 20px;
+            left: -450px;
+            background: #ffffff;
+            color: #1a1a1a;
+            padding: 10px 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            z-index: 9999;
+            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-width: 310px;
+        }
+        #social-proof.active { left: 20px; }
+        .buyer-img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; border: 2px solid var(--primary); }
+        .proof-content { font-size: 0.8rem; line-height: 1.3; }
+        .proof-content b { color: #000; }
+        .proof-status { color: #22c55e; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+
+        footer { padding: 40px 8%; text-align: center; opacity: 0.5; font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .pricing-container { flex-direction: column; align-items: center; }
+            .pricing-card { width: 100%; max-width: 320px; }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- BOTÃO DE ENTRAR -->
-  <div class="top-bar">
-    <a href="login.html" class="btn-login">Já sou assinante / Entrar 🤖</a>
-  </div>
+    <nav>
+        <a href="#" class="logo-box">
+            <img src="https://i.ibb.co/bR1dHts5/telegram-bot-premium.png" alt="Logo" class="logo-img">
+            <span class="logo-text">BOT PREMIUM</span>
+        </a>
+        <a href="login.html" class="btn-login">ACESSAR PAINEL</a>
+    </nav>
 
-  <div style="text-align: center; margin-bottom: 40px;">
-    <h1 style="color: #333;">Escolha seu Plano Premium</h1>
-    <p style="color: #666;">Turbine seu Telegram com postagens automáticas</p>
-  </div>
+    <header class="hero">
+        <img src="https://i.ibb.co/bR1dHts5/telegram-bot-premium.png" alt="Bot Logo" class="hero-logo">
+        <h1>Automatize seu Telegram em <span>Piloto Automático</span></h1>
+        <p>A solução definitiva para programar postagens em canais e grupos com total controle diretamente pelo seu navegador.</p>
+        <a href="#planos" class="btn-buy" style="max-width: 260px; margin: 0 auto; text-decoration: none;">ESCOLHER MEU PLANO</a>
+    </header>
 
-  <div class="pricing-container">
-    
-    <!-- PLANO MENSAL -->
-    <div class="pricing-card">
-      <div class="plan-name">Mensal</div>
-      <div class="price">R$ 24,97</div>
-      <div class="period">/mês</div>
-      <ul class="features">
-        <li>✅ Postagens Automáticas</li>
-        <li>✅ Acesso Imediato</li>
-        <li>✅ Suporte Básico</li>
-        <li>🚫 Sem desconto</li>
-      </ul>
-      <a href="https://pag.ae/81q27Cg-m" target="_blank" class="btn-buy">Assinar</a>
+    <!-- GUIA PASSO A PASSO -->
+    <section class="guide-section">
+        <div class="section-title" style="text-align: center; margin-bottom: 40px;">
+            <h2 style="font-size: 1.8rem;">📘 Guia de Configuração e Uso</h2>
+            <p>Configure seu bot em menos de 5 minutos</p>
+        </div>
+        <div class="guide-container">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Crie no BotFather</h3>
+                <p>Acesse @BotFather no Telegram, use /newbot e gere seu Token de acesso.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Conecte ao Painel</h3>
+                <p>Cole o Token no nosso sistema e clique em "Testar Conexão" para validar.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Adicione ao Grupo</h3>
+                <p>Coloque o bot no seu canal/grupo e promova-o a Administrador.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <h3>Salve e Poste</h3>
+                <p>Envie uma mensagem, capture o Chat ID, salve o perfil e comece a programar!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PLANOS -->
+    <section class="pricing-section" id="planos">
+        <div class="section-title">
+            <h2>Nossos Planos</h2>
+            <p>Ativação imediata no seu e-mail após a aprovação</p>
+        </div>
+
+        <div class="pricing-container">
+            <!-- MENSAL -->
+            <div class="pricing-card">
+                <div class="plan-name">MENSAL</div>
+                <div class="price">R$ 24,97</div>
+                <div class="period">por mês</div>
+                <ul class="features">
+                    <li><i class="fas fa-check"></i> Postagens Automáticas</li>
+                    <li><i class="fas fa-check"></i> Programação Ilimitada</li>
+                    <li><i class="fas fa-check"></i> Suporte Básico</li>
+                </ul>
+                <a href="https://pag.ae/81q27Cg-m" target="_blank" class="btn-buy">ASSINAR</a>
+            </div>
+
+            <!-- TRIMESTRAL -->
+            <div class="pricing-card">
+                <div class="badge">ECONOMIA</div>
+                <div class="plan-name">TRIMESTRAL</div>
+                <div class="price">R$ 57,97</div>
+                <div class="period">a cada 3 meses</div>
+                <ul class="features">
+                    <li><i class="fas fa-check"></i> Tudo do Mensal</li>
+                    <li><i class="fas fa-check"></i> Suporte Prioritário</li>
+                    <li><i class="fas fa-bolt"></i> <b>Economize R$ 17</b></li>
+                </ul>
+                <a href="https://pag.ae/81q2ew_-m" target="_blank" class="btn-buy">ASSINAR</a>
+            </div>
+
+            <!-- SEMESTRAL -->
+            <div class="pricing-card">
+                <div class="badge">POPULAR</div>
+                <div class="plan-name">SEMESTRAL</div>
+                <div class="price">R$ 97,97</div>
+                <div class="period">a cada 6 meses</div>
+                <ul class="features">
+                    <li><i class="fas fa-check"></i> Tudo do Trimestral</li>
+                    <li><i class="fas fa-check"></i> Suporte VIP</li>
+                    <li><i class="fas fa-bolt"></i> <b>Economize R$ 51</b></li>
+                </ul>
+                <a href="https://pag.ae/81q2fsmr2" target="_blank" class="btn-buy">ASSINAR</a>
+            </div>
+
+            <!-- VITALÍCIO -->
+            <div class="pricing-card featured">
+                <div class="badge">MELHOR ESCOLHA</div>
+                <div class="plan-name">VITALÍCIO</div>
+                <div class="price">R$ 197,97</div>
+                <div class="period">pagamento único</div>
+                <ul class="features">
+                    <li><i class="fas fa-infinity"></i> Postagens ILIMITADAS</li>
+                    <li><i class="fas fa-infinity"></i> Acesso PARA SEMPRE</li>
+                    <li><i class="fas fa-check"></i> Todas Atualizações</li>
+                    <li><i class="fas fa-gem"></i> Suporte VIP 24h</li>
+                </ul>
+                <a href="https://pag.ae/81q2gdzsG" target="_blank" class="btn-buy">COMPRAR AGORA</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <div class="section-title" style="text-align: center;">
+            <h2>❓ Dúvidas Frequentes</h2>
+            <p>Tire suas dúvidas sobre o funcionamento do Bot</p>
+        </div>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">Como funciona o Bot Telegram Premium? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">O Bot funciona diretamente no seu navegador, sem necessidade de instalar programas. Ele é compatível com Chrome, Firefox, Edge e Opera.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Preciso deixar o computador ligado? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Sim. Como o sistema roda no navegador, é necessário manter o computador ligado e o navegador aberto durante o funcionamento das postagens automáticas.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Quantos posts posso programar? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Você pode programar um número indeterminado de postagens em todos os planos. Esse é o nosso grande diferencial.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">Posso postar em vários grupos ou canais? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Sim! Você pode configurar múltiplos perfis para gerenciar diferentes grupos e canais simultaneamente, desde que o bot seja administrador.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">O Bot é seguro? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">Sim. Utilizamos a API oficial do Telegram e seguimos as melhores práticas de segurança para garantir a estabilidade das suas contas.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTATO -->
+    <section class="contact-section">
+        <div class="contact-card">
+            <i class="fas fa-envelope-open-text"></i>
+            <h2>Suporte ao Cliente</h2>
+            <p>Ficou com alguma dúvida técnica ou precisa de ajuda?</p>
+            <div class="contact-email">jdonascimentosoares@gmail.com</div>
+            <a href="mailto:jdonascimentosoares@gmail.com" class="btn-login" style="display: inline-block; padding: 15px 40px;">FALAR COM SUPORTE</a>
+        </div>
+    </section>
+
+    <!-- PROVA SOCIAL -->
+    <div id="social-proof">
+        <img src="" class="buyer-img" id="buyer-img">
+        <div class="proof-content">
+            <span id="proof-text"></span>
+            <div class="proof-status"><i class="fas fa-check-circle"></i> Assinatura aprovada agora</div>
+        </div>
     </div>
 
-    <!-- PLANO TRIMESTRAL -->
-    <div class="pricing-card">
-      <div class="plan-name">Trimestral</div>
-      <div class="price">R$ 57,97</div>
-      <div class="period">a cada 3 meses</div>
-      <ul class="features">
-        <li>✅ Postagens Automáticas</li>
-        <li>✅ Acesso Imediato</li>
-        <li>✅ Suporte Prioritário</li>
-        <li>🔥 Economize R$ 17,00</li>
-      </ul>
-      <a href="https://pag.ae/81q2ew_-m" target="_blank" class="btn-buy">Assinar</a>
-    </div>
+    <footer>
+        <p>&copy; 2026 Bot Telegram Premium - Tecnologia em Automação.</p>
+        <p style="margin-top: 10px; font-size: 0.7rem; opacity: 0.6;">Utilize o mesmo e-mail do Bot no PagSeguro para liberação automática.</p>
+    </footer>
 
-    <!-- PLANO SEMESTRAL -->
-    <div class="pricing-card">
-      <div class="plan-name">Semestral</div>
-      <div class="price">R$ 97,97</div>
-      <div class="period">a cada 6 meses</div>
-      <ul class="features">
-        <li>✅ Postagens Automáticas</li>
-        <li>✅ Acesso Imediato</li>
-        <li>✅ Suporte VIP</li>
-        <li>🔥 Economize R$ 51,00</li>
-      </ul>
-      <a href="https://pag.ae/81q2fsmr2" target="_blank" class="btn-buy">Assinar</a>
-    </div>
+    <script>
+        // Lógica do FAQ
+        document.querySelectorAll('.faq-question').forEach(item => {
+            item.addEventListener('click', () => {
+                const parent = item.parentElement;
+                parent.classList.toggle('active');
+            });
+        });
 
-    <!-- PLANO VITALÍCIO (DESTAQUE) -->
-    <div class="pricing-card featured">
-      <div class="badge">MAIS VENDIDO</div>
-      <div class="plan-name">Vitalício</div>
-      <div class="price">R$ 197,97</div>
-      <div class="period">pagamento único</div>
-      <ul class="features">
-        <li>✅ Postagens ILIMITADAS</li>
-        <li>✅ Acesso PARA SEMPRE</li>
-        <li>✅ Todas Atualizações</li>
-        <li>💎 Melhor Custo-Benefício</li>
-      </ul>
-      <a href="https://pag.ae/81q2gdzsG" target="_blank" class="btn-buy">Comprar Agora</a>
-    </div>
+        // Lógica Prova Social
+        const compradores = [
+            { n: "Marcos Vinícius", f: "https://randomuser.me/api/portraits/men/32.jpg", p: "Plano Vitalício" },
+            { n: "Julia Santos", f: "https://randomuser.me/api/portraits/women/44.jpg", p: "Plano Vitalício" },
+            { n: "Ricardo Oliveira", f: "https://randomuser.me/api/portraits/men/46.jpg", p: "Plano Semestral" },
+            { n: "Ana Paula Silva", f: "https://randomuser.me/api/portraits/women/68.jpg", p: "Plano Vitalício" },
+            { n: "Felipe Mendes", f: "https://randomuser.me/api/portraits/men/22.jpg", p: "Plano Trimestral" },
+            { n: "Fernanda Lima", f: "https://randomuser.me/api/portraits/women/29.jpg", p: "Plano Vitalício" },
+            { n: "Bruno Souza", f: "https://randomuser.me/api/portraits/men/11.jpg", p: "Plano Mensal" },
+            { n: "Carla Oliveira", f: "https://randomuser.me/api/portraits/women/17.jpg", p: "Plano Vitalício" }
+        ];
 
-  </div>
+        function mostrar() {
+            const popup = document.getElementById('social-proof');
+            const info = compradores[Math.floor(Math.random() * compradores.length)];
+            
+            document.getElementById('buyer-img').src = info.f;
+            document.getElementById('proof-text').innerHTML = `<b>${info.n}</b> acabou de adquirir o <b>${info.p}</b>`;
 
-  <!-- AVISO DE E-MAIL IMPORTANTE -->
-  <div class="email-warning">
-    ⚠️ <strong>IMPORTANTE:</strong> Para que sua liberação seja <strong>IMEDIATA</strong> e automática, 
-    você deve utilizar no PagSeguro o <strong>MESMO E-MAIL</strong> que usou para criar sua conta aqui no Bot.
-  </div>
+            popup.classList.add('active');
+            setTimeout(() => { popup.classList.remove('active'); }, 6000);
+        }
 
+        setInterval(mostrar, 25000);
+        setTimeout(mostrar, 5000);
+    </script>
 </body>
 </html>
