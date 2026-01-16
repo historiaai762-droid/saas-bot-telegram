@@ -1,76 +1,197 @@
-<style>
-  /* Estilos da Tabela de Preços */
-  .pricing-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 40px 20px; font-family: Arial, sans-serif; }
-  .pricing-card { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 30px; width: 250px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s; position: relative; }
-  .pricing-card:hover { transform: translateY(-10px); border-color: #00C853; }
-  .pricing-card.featured { border: 2px solid #00C853; background: #f9fff9; }
-  .badge { background: #00C853; color: white; padding: 5px 10px; border-radius: 20px; font-size: 12px; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-weight: bold; }
-  .plan-name { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px; }
-  .price { font-size: 32px; color: #00C853; font-weight: bold; margin-bottom: 5px; }
-  .period { color: #777; font-size: 14px; margin-bottom: 20px; }
-  .features { list-style: none; padding: 0; margin-bottom: 25px; color: #555; font-size: 14px; }
-  .features li { margin-bottom: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; }
-  .btn-buy { background: #00C853; color: white; text-decoration: none; padding: 12px 25px; border-radius: 5px; display: inline-block; font-weight: bold; transition: background 0.3s; width: 80%; }
-  .btn-buy:hover { background: #009624; }
-</style>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planos | Bot Telegram Premium</title>
+  <style>
+    /* Estilos Gerais */
+    body { background-color: #f4f7f6; margin: 0; font-family: 'Segoe UI', Arial, sans-serif; }
 
-<div class="pricing-container">
-  
-  <!-- PLANO MENSAL -->
-  <div class="pricing-card">
-    <div class="plan-name">Mensal</div>
-    <div class="price">R$ 24,97</div>
-    <div class="period">/mês</div>
-    <ul class="features">
-      <li>✅ Postagens Automáticas</li>
-      <li>✅ Acesso Imediato</li>
-      <li>✅ Suporte Básico</li>
-      <li>🚫 Sem desconto</li>
-    </ul>
-    <a href="https://pag.ae/81q27Cg-m" target="_blank" class="btn-buy">Assinar</a>
+    /* BOTÃO DE LOGIN NO TOPO */
+    .top-bar {
+      display: flex;
+      justify-content: flex-end;
+      padding: 20px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .btn-login {
+      color: #00C853;
+      font-weight: bold;
+      text-decoration: none;
+      border: 2px solid #00C853;
+      padding: 10px 25px;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+
+    .btn-login:hover {
+      background: #00C853;
+      color: white;
+    }
+
+    /* Estilos da Tabela de Preços */
+    .pricing-container { 
+      display: flex; 
+      flex-wrap: wrap; 
+      justify-content: center; 
+      gap: 20px; 
+      padding: 20px 20px; 
+    }
+
+    .pricing-card { 
+      background: #fff; 
+      border: 1px solid #eee; 
+      border-radius: 10px; 
+      padding: 30px; 
+      width: 250px; 
+      text-align: center; 
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+      transition: transform 0.3s; 
+      position: relative; 
+    }
+
+    .pricing-card:hover { transform: translateY(-10px); border-color: #00C853; }
+    
+    .pricing-card.featured { 
+      border: 2px solid #00C853; 
+      background: #f9fff9; 
+      transform: scale(1.05);
+    }
+
+    .pricing-card.featured:hover { transform: scale(1.05) translateY(-10px); }
+
+    .badge { 
+      background: #00C853; 
+      color: white; 
+      padding: 5px 15px; 
+      border-radius: 20px; 
+      font-size: 12px; 
+      position: absolute; 
+      top: -12px; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      font-weight: bold; 
+    }
+
+    .plan-name { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px; }
+    .price { font-size: 32px; color: #00C853; font-weight: bold; margin-bottom: 5px; }
+    .period { color: #777; font-size: 14px; margin-bottom: 20px; }
+    
+    .features { list-style: none; padding: 0; margin-bottom: 25px; color: #555; font-size: 14px; }
+    .features li { margin-bottom: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; }
+
+    .btn-buy { 
+      background: #00C853; 
+      color: white; 
+      text-decoration: none; 
+      padding: 12px 25px; 
+      border-radius: 5px; 
+      display: inline-block; 
+      font-weight: bold; 
+      transition: background 0.3s; 
+      width: 80%; 
+    }
+
+    .btn-buy:hover { background: #009624; }
+
+    /* AVISO DE E-MAIL */
+    .email-warning {
+      text-align: center;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      color: #856404;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .email-warning strong { color: #c00; }
+  </style>
+</head>
+<body>
+
+  <!-- BOTÃO DE ENTRAR -->
+  <div class="top-bar">
+    <a href="login.html" class="btn-login">Já sou assinante / Entrar 🤖</a>
   </div>
 
-  <!-- PLANO TRIMESTRAL -->
-  <div class="pricing-card">
-    <div class="plan-name">Trimestral</div>
-    <div class="price">R$ 57,97</div>
-    <div class="period">a cada 3 meses</div>
-    <ul class="features">
-      <li>✅ Postagens Automáticas</li>
-      <li>✅ Acesso Imediato</li>
-      <li>✅ Suporte Prioritário</li>
-      <li>🔥 Economize R$ 17,00</li>
-    </ul>
-    <a href="https://pag.ae/81q2ew_-m" target="_blank" class="btn-buy">Assinar</a>
+  <div style="text-align: center; margin-bottom: 40px;">
+    <h1 style="color: #333;">Escolha seu Plano Premium</h1>
+    <p style="color: #666;">Turbine seu Telegram com postagens automáticas</p>
   </div>
 
-  <!-- PLANO SEMESTRAL -->
-  <div class="pricing-card">
-    <div class="plan-name">Semestral</div>
-    <div class="price">R$ 97,97</div>
-    <div class="period">a cada 6 meses</div>
-    <ul class="features">
-      <li>✅ Postagens Automáticas</li>
-      <li>✅ Acesso Imediato</li>
-      <li>✅ Suporte VIP</li>
-      <li>🔥 Economize R$ 51,00</li>
-    </ul>
-    <a href="https://pag.ae/81q2fsmr2" target="_blank" class="btn-buy">Assinar</a>
+  <div class="pricing-container">
+    
+    <!-- PLANO MENSAL -->
+    <div class="pricing-card">
+      <div class="plan-name">Mensal</div>
+      <div class="price">R$ 24,97</div>
+      <div class="period">/mês</div>
+      <ul class="features">
+        <li>✅ Postagens Automáticas</li>
+        <li>✅ Acesso Imediato</li>
+        <li>✅ Suporte Básico</li>
+        <li>🚫 Sem desconto</li>
+      </ul>
+      <a href="https://pag.ae/81q27Cg-m" target="_blank" class="btn-buy">Assinar</a>
+    </div>
+
+    <!-- PLANO TRIMESTRAL -->
+    <div class="pricing-card">
+      <div class="plan-name">Trimestral</div>
+      <div class="price">R$ 57,97</div>
+      <div class="period">a cada 3 meses</div>
+      <ul class="features">
+        <li>✅ Postagens Automáticas</li>
+        <li>✅ Acesso Imediato</li>
+        <li>✅ Suporte Prioritário</li>
+        <li>🔥 Economize R$ 17,00</li>
+      </ul>
+      <a href="https://pag.ae/81q2ew_-m" target="_blank" class="btn-buy">Assinar</a>
+    </div>
+
+    <!-- PLANO SEMESTRAL -->
+    <div class="pricing-card">
+      <div class="plan-name">Semestral</div>
+      <div class="price">R$ 97,97</div>
+      <div class="period">a cada 6 meses</div>
+      <ul class="features">
+        <li>✅ Postagens Automáticas</li>
+        <li>✅ Acesso Imediato</li>
+        <li>✅ Suporte VIP</li>
+        <li>🔥 Economize R$ 51,00</li>
+      </ul>
+      <a href="https://pag.ae/81q2fsmr2" target="_blank" class="btn-buy">Assinar</a>
+    </div>
+
+    <!-- PLANO VITALÍCIO (DESTAQUE) -->
+    <div class="pricing-card featured">
+      <div class="badge">MAIS VENDIDO</div>
+      <div class="plan-name">Vitalício</div>
+      <div class="price">R$ 197,97</div>
+      <div class="period">pagamento único</div>
+      <ul class="features">
+        <li>✅ Postagens ILIMITADAS</li>
+        <li>✅ Acesso PARA SEMPRE</li>
+        <li>✅ Todas Atualizações</li>
+        <li>💎 Melhor Custo-Benefício</li>
+      </ul>
+      <a href="https://pag.ae/81q2gdzsG" target="_blank" class="btn-buy">Comprar Agora</a>
+    </div>
+
   </div>
 
-  <!-- PLANO VITALÍCIO (DESTAQUE) -->
-  <div class="pricing-card featured">
-    <div class="badge">MAIS VENDIDO</div>
-    <div class="plan-name">Vitalício</div>
-    <div class="price">R$ 197,97</div>
-    <div class="period">pagamento único</div>
-    <ul class="features">
-      <li>✅ Postagens ILIMITADAS</li>
-      <li>✅ Acesso PARA SEMPRE</li>
-      <li>✅ Todas Atualizações</li>
-      <li>💎 Melhor Custo-Benefício</li>
-    </ul>
-    <a href="https://pag.ae/81q2gdzsG" target="_blank" class="btn-buy">Comprar Agora</a>
+  <!-- AVISO DE E-MAIL IMPORTANTE -->
+  <div class="email-warning">
+    ⚠️ <strong>IMPORTANTE:</strong> Para que sua liberação seja <strong>IMEDIATA</strong> e automática, 
+    você deve utilizar no PagSeguro o <strong>MESMO E-MAIL</strong> que usou para criar sua conta aqui no Bot.
   </div>
 
-</div>
+</body>
+</html>
