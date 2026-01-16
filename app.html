@@ -1008,42 +1008,53 @@
         const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
         async function verificarAcesso() {
-            // 1. Verifica se o usuário está logado
-            const { data: { user } } = await _supabase.auth.getUser();
+    console.log("Iniciando verificação...");
+    
+    // 1. Verifica se o usuário está logado
+    const { data: { user } } = await _supabase.auth.getUser();
 
-            if (!user) {
-                window.location.href = "login.html"; // Manda para login se não tiver logado
-                return;
-            }
+    if (!user) {
+        console.log("Usuário não logado, redirecionando...");
+        window.location.href = "login.html";
+        return;
+    }
 
-            // 2. Verifica se ele tem assinatura ativa
-            // Lembre-se: 'subscriptions' é a tabela onde você guarda os pagamentos.
-            // O 'user_id' aqui deve corresponder ao campo que você usa para identificar o usuário, que no nosso caso é o e-mail.
-            const { data: subscription, error } = await _supabase
-                .from('subscriptions')
-                .select('status, expires_at')
-                .eq('user_id', user.email) 
-                .single();
+    console.log("Usuário logado:", user.email);
 
-            const agora = new Date();
-            const dataExpiracao = subscription ? new Date(subscription.expires_at) : null;
+    // 2. Busca a assinatura (Mudamos para buscar como lista para evitar o erro 406)
+    const { data: subscriptions, error } = await _supabase
+        .from('subscriptions')
+        .select('status, expires_at')
+        .eq('user_id', user.email.trim().toLowerCase()); // Limpa espaços e força minúsculas
 
-            if (!subscription || subscription.status !== 'active' || (dataExpiracao && dataExpiracao < agora)) {
-                // Se não pagou ou expirou, esconde o bot e mostra aviso
-                document.body.innerHTML = `
-                    <div style="color: white; text-align: center; margin-top: 100px; font-family: sans-serif; background: #0a0e1a; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                        <h1>🚫 Acesso Negado</h1>
-                        <p>Você precisa de uma assinatura ativa para usar este bot.</p>
-                        <a href="index.html" style="color: #b9ff00; text-decoration: none; margin-top: 20px; padding: 10px 20px; border: 1px solid #b9ff00; border-radius: 8px; transition: background 0.3s;">Ver Planos de Assinatura</a>
-                        <button onclick="logout()" style="background: none; border: none; color: #888; text-decoration: underline; cursor: pointer; margin-top: 15px;">Sair</button>
-                    </div>
-                `;
-                return;
-            }
+    if (error) {
+        console.error("Erro ao consultar banco de dados:", error.message);
+    }
 
-            // Se chegou aqui, o acesso está liberado! 
-            console.log("Acesso liberado para: " + user.email);
-        }
+    // Pega a primeira assinatura encontrada (se houver)
+    const subscription = subscriptions && subscriptions.length > 0 ? subscriptions[0] : null;
+
+    const agora = new Date();
+    const dataExpiracao = subscription ? new Date(subscription.expires_at) : null;
+
+    console.log("Assinatura encontrada:", subscription);
+
+    if (!subscription || subscription.status !== 'active' || (dataExpiracao && dataExpiracao < agora)) {
+        console.log("Acesso negado. Motivo: Sem assinatura ativa ou expirada.");
+        document.body.innerHTML = `
+            <div style="color: white; text-align: center; margin-top: 100px; font-family: sans-serif; background: #0a0e1a; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <h1>🚫 Acesso Negado</h1>
+                <p>E-mail logado: ${user.email}</p>
+                <p>Você precisa de uma assinatura ativa para usar este bot.</p>
+                <a href="index.html" style="color: #b9ff00; text-decoration: none; margin-top: 20px; padding: 10px 20px; border: 1px solid #b9ff00; border-radius: 8px;">Ver Planos de Assinatura</a>
+                <button onclick="logout()" style="background: none; border: none; color: #888; text-decoration: underline; cursor: pointer; margin-top: 15px;">Sair</button>
+            </div>
+        `;
+        return;
+    }
+
+    console.log("✅ Acesso liberado!");
+}
 
         async function logout() {
             await _supabase.auth.signOut();
@@ -1998,3 +2009,4 @@
 </body>
 </html>
 --- END OF FILE app.html ---
+
