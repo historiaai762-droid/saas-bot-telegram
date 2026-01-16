@@ -1,9 +1,12 @@
+--- START OF FILE app.html ---
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bot Telegram Premium - Agendamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -995,6 +998,61 @@
     </div>
 
     <script>
+        // ============================================================
+        // 🚨 CONFIGURAÇÃO DO SUPABASE - CHAVES JÁ ADICIONADAS
+        // ============================================================
+        const supabaseUrl = "https://zyjeriulpozkvhtxdvrx.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5amVyaXVscG96a3ZodHhkdnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0MzM3NzQsImV4cCI6MjA4NDAwOTc3NH0.dFcbSg8JOlO0sSvU1bz-a1rpyh8p5LoUpLddetHkGZI"; 
+        // ============================================================
+
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function verificarAcesso() {
+            // 1. Verifica se o usuário está logado
+            const { data: { user } } = await _supabase.auth.getUser();
+
+            if (!user) {
+                window.location.href = "login.html"; // Manda para login se não tiver logado
+                return;
+            }
+
+            // 2. Verifica se ele tem assinatura ativa
+            // Lembre-se: 'subscriptions' é a tabela onde você guarda os pagamentos.
+            // O 'user_id' aqui deve corresponder ao campo que você usa para identificar o usuário, que no nosso caso é o e-mail.
+            const { data: subscription, error } = await _supabase
+                .from('subscriptions')
+                .select('status, expires_at')
+                .eq('user_id', user.email) 
+                .single();
+
+            const agora = new Date();
+            const dataExpiracao = subscription ? new Date(subscription.expires_at) : null;
+
+            if (!subscription || subscription.status !== 'active' || (dataExpiracao && dataExpiracao < agora)) {
+                // Se não pagou ou expirou, esconde o bot e mostra aviso
+                document.body.innerHTML = `
+                    <div style="color: white; text-align: center; margin-top: 100px; font-family: sans-serif; background: #0a0e1a; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <h1>🚫 Acesso Negado</h1>
+                        <p>Você precisa de uma assinatura ativa para usar este bot.</p>
+                        <a href="index.html" style="color: #b9ff00; text-decoration: none; margin-top: 20px; padding: 10px 20px; border: 1px solid #b9ff00; border-radius: 8px; transition: background 0.3s;">Ver Planos de Assinatura</a>
+                        <button onclick="logout()" style="background: none; border: none; color: #888; text-decoration: underline; cursor: pointer; margin-top: 15px;">Sair</button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Se chegou aqui, o acesso está liberado! 
+            console.log("Acesso liberado para: " + user.email);
+        }
+
+        async function logout() {
+            await _supabase.auth.signOut();
+            window.location.href = "login.html";
+        }
+
+        // Executa a verificação assim que a página abre
+        verificarAcesso();
+
         // NOTIFICAÇÕES
         const notificationIcons = {
             success: '✔',
@@ -1939,3 +1997,4 @@
     </script>
 </body>
 </html>
+--- END OF FILE app.html ---
