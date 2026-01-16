@@ -1,13 +1,12 @@
 const { createClient } = require("@supabase/supabase-js");
 
-// Credenciais (JÁ ESTÃO CORRETAS)
+// Suas credenciais (JÁ ESTÃO CORRETAS)
 const supabaseUrl = "https://zyjeriulpozkvhtxdvrx.supabase.co"; 
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5amVyaXVscG96a3ZodHhkdnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0MzM3NzQsImV4cCI6MjA4NDAwOTc3NH0.dFcbSg8JOlO0sSvU1bz-a1rpyh8p5LoUpLddetHkGZI";
 const supabase = createClient(supabaseUrl, supabaseKey);
 const PAGSEGURO_TOKEN = "4f6eb875-2441-4bb9-a455-68c4da045c0abe77c4e24181a15b2527f8c3ffab1ac8103b-a43a-42c1-a3f4-f4677dcddee8";
 const PAGSEGURO_EMAIL = "jdonascimentosoares@gmail.com";
 
-// Formato correto para Vercel Serverless Functions
 module.exports = async (req, res) => {
   try {
     const { notificationCode } = req.body;
@@ -33,10 +32,10 @@ module.exports = async (req, res) => {
 
     const xmlText = await transactionResponse.text();
     console.log("🔍 XML Recebido:", xmlText);
-
-    // Extrair o e-mail do comprador
+    
+    // Expressões Regulares para extrair os dados
     const statusMatch = xmlText.match(/<status>(\d)<\/status>/);
-    const emailMatch = xmlText.match(/<sender><email>(.*?)<\/email><\/sender>/);
+    const emailMatch = xmlText.match(/<sender>.*?<email>(.*?)<\/email>.*?<\/sender>/);
     
     const status = statusMatch ? parseInt(statusMatch[1], 10) : null;
     const userEmail = emailMatch ? emailMatch[1] : `cliente-sem-email-${Date.now()}`;
@@ -48,13 +47,16 @@ module.exports = async (req, res) => {
       dataHoje.setDate(dataHoje.getDate() + 30);
       
       const { data, error } = await supabase.from("subscriptions").upsert({
-        user_id: userEmail, // Salva o e-mail do cliente como ID
+        user_id: userEmail,
         plan: "premium",
         status: "active",
         expires_at: dataHoje.toISOString()
       }, { onConflict: 'user_id' }); 
 
-      if (error) throw error;
+      if (error) {
+        console.error("ERRO NO SUPABASE:", error.message);
+        throw error;
+      }
       console.log(`✅ Acesso liberado/atualizado para: ${userEmail}`);
     }
 
