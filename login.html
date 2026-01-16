@@ -104,15 +104,14 @@
 
     <script>
         // ============================================================
-        // 🚨 CONFIGURAÇÃO - COLOQUE SUAS CHAVES AQUI
+        // 🚨 CONFIGURAÇÃO REAL - CHAVES JÁ ADICIONADAS
         // ============================================================
         const supabaseUrl = "https://zyjeriulpozkvhtxdvrx.supabase.co";
-        // Use a chave ANON (aquela pública), NÃO use a service_role aqui
-        const supabaseKey = "COLE_SUA_CHAVE_ANON_DO_SUPABASE_AQUI"; 
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5amVyaXVscG96a3ZodHhkdnJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0MzM3NzQsImV4cCI6MjA4NDAwOTc3NH0.dFcbSg8JOlO0sSvU1bz-a1rpyh8p5LoUpLddetHkGZI"; 
         // ============================================================
 
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-        let modoLogin = true; // true = Login, false = Cadastro
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        let modoLogin = true; 
 
         function alternarModo() {
             modoLogin = !modoLogin;
@@ -148,8 +147,7 @@
             document.getElementById('btnAcao').innerText = "Carregando...";
 
             if (modoLogin) {
-                // --- LOGAR ---
-                const { data, error } = await supabase.auth.signInWithPassword({
+                const { data, error } = await _supabase.auth.signInWithPassword({
                     email: email,
                     password: senha,
                 });
@@ -157,12 +155,11 @@
                 if (error) {
                     mostrarErro("Erro: " + error.message);
                 } else {
-                    window.location.href = "app.html"; // Redireciona para o Bot
+                    window.location.href = "app.html"; 
                 }
 
             } else {
-                // --- CADASTRAR ---
-                const { data, error } = await supabase.auth.signUp({
+                const { data, error } = await _supabase.auth.signUp({
                     email: email,
                     password: senha,
                 });
@@ -171,8 +168,7 @@
                     mostrarErro("Erro ao cadastrar: " + error.message);
                 } else {
                     mostrarSucesso("Conta criada! Fazendo login...");
-                    // Tenta logar automaticamente após criar
-                    await supabase.auth.signInWithPassword({ email, password: senha });
+                    await _supabase.auth.signInWithPassword({ email, password: senha });
                     setTimeout(() => { window.location.href = "app.html"; }, 1500);
                 }
             }
